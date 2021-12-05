@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * @return mixed
+ * Implements hook_schema()
+ */
+
+function guest_book_schema(): array {
+  $schema['guest_book'] = [
+    'description' => 'Database table for guest book module',
+    'fields' => [
+      'id' => [
+        'description' => 'ID',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'user_name' => [
+        'description' => 'User name',
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'user_email' => [
+        'description' => 'User email',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'user_phone' => [
+        'description' => 'User phone number',
+        'type' => 'varchar',
+        'length' => 18,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'user_message' => [
+        'description' => 'User message',
+        'type' => 'varchar',
+        'length' => 1000,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'user_avatar' => [
+        'description' => 'User avatar',
+        'type' => 'int',
+        'length' => 20,
+        'not null' => FALSE,
+      ],
+      'user_image' => [
+        'description' => 'User image',
+        'type' => 'int',
+        'length' => 20,
+        'not null' => FALSE,
+      ],
+      'date' => [
+        'description' => 'Date when the comment was added ',
+        'type' => 'int',
+        'length' => 20,
+        'not null' => TRUE,
+
+      ],
+    ],
+    'primary key' => ['id']
+  ];
+
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function guest_book_uninstall() {
+  # Remove table
+  \Drupal::state()->delete('guest_book.guest_book');
+}
