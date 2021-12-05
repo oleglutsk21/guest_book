@@ -1,0 +1,6 @@
+name: Guest book
+description: This module creates a page with a list of comments and a form where users can leave their feedback, comments, impressions and wishes.
+package: Custom
+
+type: module
+core_version_requirement: ^8 || ^9
