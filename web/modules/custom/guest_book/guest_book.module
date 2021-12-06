@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function guest_book_theme($existing, $type, $theme, $path) {
+
+  return [
+    'comments-list' => [
+      'variables' => [
+        'form'=> [],
+        'row' => [],
+      ],
+    ],
+  ];
+}

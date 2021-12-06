@@ -8,6 +8,7 @@ use Drupal\Core\Ajax\MessageCommand;
 use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\file\Entity\File;
 
 /**
  * Provides custom Guest book form class.
@@ -85,6 +86,9 @@ class GuestBookForm extends FormBase {
       '#type' => 'textarea',
       '#title' => $this->t('Your message:'),
       '#required' => TRUE,
+      '#attributes'  => [
+        'autocomplete' => 'off',
+      ],
     ];
 
     $form['user_avatar'] = [
@@ -96,6 +100,9 @@ class GuestBookForm extends FormBase {
         'file_validate_size' => [2097152],
       ],
       '#default_value' => '',
+      '#attributes'  => [
+        'autocomplete' => 'off',
+      ],
     ];
 
     $form['user_image'] = [
@@ -105,6 +112,9 @@ class GuestBookForm extends FormBase {
       '#upload_validators' => [
         'file_validate_extensions' => ['png jpg jpeg'],
         'file_validate_size' => [5242880],
+      ],
+      '#attributes'  => [
+        'autocomplete' => 'off',
       ],
     ];
 
@@ -194,23 +204,48 @@ class GuestBookForm extends FormBase {
     return $response;
   }
 
+  /**
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
-          $userAvatar = $form_state->getValue('user_avatar');
-          $data      = [
-            'user_name'  => $form_state->getValue('user_name'),
-            'user_email'     => $form_state->getValue('user_email'),
-            'user_avatar' => $userAvatar[0],
-            'date'      => \Drupal::time()->getCurrentTime(),
-          ];
+    $userAvatar = $form_state->getValue('user_avatar');
+    $userImage = $form_state->getValue('user_image');
 
-          // Save file as Permanent.
-          $file = File::load($userAvatar[0]);
-          $file->setPermanent();
-          $file->save();
+    // Save avatar file as Permanent.
+    if (is_null($userAvatar[0])) {
+      $data['user_avatar'] = 0;
+    }
+    else {
+      $userAvatarFile = File::load($userAvatar[0]);
+      $userAvatarFile->setPermanent();
+      $userAvatarFile->save();
+    }
 
-          // Insert data to database.
-          \Drupal::database()->insert('oleg')->fields($data)->execute();
+    // Save image file as Permanent.
+    if (is_null($userImage[0])) {
+      $data['user_image'] = 0;
+    }
+    else {
+      $userImageFile = File::load($userImage[0]);
+      $userImageFile->setPermanent();
+      $userImageFile->save();
+    }
+
+    $data = [
+      'user_name'  => $form_state->getValue('user_name'),
+      'user_email'     => $form_state->getValue('user_email'),
+      'user_phone'     => $form_state->getValue('user_phone'),
+      'user_message' => $form_state->getValue('user_message'),
+      'user_avatar' => $userAvatar[0],
+      'user_image' => $userImage[0],
+      'date'      => \Drupal::time()->getCurrentTime(),
+    ];
+
+
+
+    // Insert data to database.
+    \Drupal::database()->insert('guest_book')->fields($data)->execute();
 
   }
 

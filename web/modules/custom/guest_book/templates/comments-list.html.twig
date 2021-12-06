@@ -1,0 +1,20 @@
+<div class="comments__form">
+  {{ form }}
+</div>
+
+<div class="comments__items">
+  {% for items in row %}
+    <div class="comments__item">
+      <h3 class="comments__user-name">{{ items.user_name }}</h3>
+      <div class="cat__user-info">
+        <span class="cat__user-email"><a class="user__email-link" href="mailto:{{ items.user_email }}">{{ items.user_email }}</a></span>
+        <span class="cat__created-on">{{ items.date }}</span>
+        {{ items.user_phone }}
+        {{ items.user_avatar }}
+        {{ items.user_image }}
+        {{ items.user_message }}
+      </div>
+    </div>
+
+  {% endfor %}
+</div>
