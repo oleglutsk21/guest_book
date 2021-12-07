@@ -5,3 +5,11 @@ guest_book.page:
     _title: 'Guest book'
   requirements:
     _permission: 'access content'
+
+guest_book.delete_form:
+  path: '/admin/guest-book/{id}/delete'
+  defaults:
+    _form: '\Drupal\guest_book\Form\DeleteGuestBookForm'
+    _title: 'Delete form'
+  requirements:
+    _permission: 'administer site configuration'

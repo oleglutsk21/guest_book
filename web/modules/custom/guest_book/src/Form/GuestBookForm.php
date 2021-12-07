@@ -99,10 +99,6 @@ class GuestBookForm extends FormBase {
         'file_validate_extensions' => ['png jpg jpeg'],
         'file_validate_size' => [2097152],
       ],
-      '#default_value' => '',
-      '#attributes'  => [
-        'autocomplete' => 'off',
-      ],
     ];
 
     $form['user_image'] = [
@@ -112,9 +108,6 @@ class GuestBookForm extends FormBase {
       '#upload_validators' => [
         'file_validate_extensions' => ['png jpg jpeg'],
         'file_validate_size' => [5242880],
-      ],
-      '#attributes'  => [
-        'autocomplete' => 'off',
       ],
     ];
 
@@ -233,16 +226,14 @@ class GuestBookForm extends FormBase {
     }
 
     $data = [
-      'user_name'  => $form_state->getValue('user_name'),
-      'user_email'     => $form_state->getValue('user_email'),
-      'user_phone'     => $form_state->getValue('user_phone'),
+      'user_name' => $form_state->getValue('user_name'),
+      'user_email' => $form_state->getValue('user_email'),
+      'user_phone' => $form_state->getValue('user_phone'),
       'user_message' => $form_state->getValue('user_message'),
       'user_avatar' => $userAvatar[0],
       'user_image' => $userImage[0],
       'date'      => \Drupal::time()->getCurrentTime(),
     ];
-
-
 
     // Insert data to database.
     \Drupal::database()->insert('guest_book')->fields($data)->execute();

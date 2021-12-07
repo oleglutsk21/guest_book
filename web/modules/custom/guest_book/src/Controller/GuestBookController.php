@@ -3,6 +3,7 @@
 namespace Drupal\guest_book\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Url;
 use Drupal\file\Entity\File;
 
 /**
@@ -44,7 +45,6 @@ class GuestBookController extends ControllerBase {
         $userAvatarUri = $userAvatarUri->getFileUri();
       }
 
-      $userAvatarUrl = file_create_url($userAvatarUri);
       $userAvatar = [
         '#theme' => 'image',
         '#uri' => $userAvatarUri,
@@ -56,14 +56,12 @@ class GuestBookController extends ControllerBase {
       ];
 
       $userImageUri = File::load($data->user_image);
-      $userImageUrl = '';
 
       if (is_null($userImageUri)) {
         $userImage = NULL;
       }
       else {
         $userImageUri = $userImageUri->getFileUri();
-        $userImageUrl = file_create_url($userImageUri);
 
         $userImage = [
           '#theme' => 'image',
@@ -76,6 +74,19 @@ class GuestBookController extends ControllerBase {
         ];
       }
 
+      $urlDelete = Url::fromRoute('guest_book.delete_form', ['id' => $data->id], []);
+      $linkDelete = [
+        '#type' => 'link',
+        '#title' => 'Delete',
+        '#url' => $urlDelete,
+        '#options' => [
+          'attributes' => [
+            'class' => ['use-ajax'],
+            'data-dialog-type' => 'modal',
+          ],
+        ],
+      ];
+
       //get data
       $rows[] = [
         'id' => $data->id,
@@ -85,9 +96,8 @@ class GuestBookController extends ControllerBase {
         'user_message' => $data->user_message,
         'user_avatar' => $userAvatar,
         'user_image' => $userImage,
-        'user_avatar_url' => $userAvatarUrl,
-        'user_image_url' => $userImageUrl,
         'date' => date('Y-m-d H:i:s', $data->date),
+        'delete'=> $linkDelete,
       ];
     }
 
