@@ -14,7 +14,12 @@
         {{ items.user_image }}
         {{ items.user_message }}
       </div>
-      <div class="admin-control__buttons">{{ items.delete }}</div>
+    {% if user.hasPermission('administer nodes') %}
+      <div class="admin-control__buttons">
+        {{ items.delete }}
+        {{ items.edit }}
+      </div>
+    {% endif %}
     </div>
 
   {% endfor %}

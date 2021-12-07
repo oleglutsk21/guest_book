@@ -87,6 +87,19 @@ class GuestBookController extends ControllerBase {
         ],
       ];
 
+      $urlEdit = Url::fromRoute('guest_book.edit_form', ['id' => $data->id], []);
+      $linkEdit = [
+        '#type' => 'link',
+        '#title' => 'Edit',
+        '#url' => $urlEdit,
+        '#options' => [
+          'attributes' => [
+            'class' => ['use-ajax'],
+            'data-dialog-type' => 'modal',
+          ],
+        ],
+      ];
+
       //get data
       $rows[] = [
         'id' => $data->id,
@@ -98,6 +111,7 @@ class GuestBookController extends ControllerBase {
         'user_image' => $userImage,
         'date' => date('Y-m-d H:i:s', $data->date),
         'delete'=> $linkDelete,
+        'edit'=> $linkEdit,
       ];
     }
 

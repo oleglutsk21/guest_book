@@ -16,6 +16,9 @@ use Drupal\file\Entity\File;
 
 class GuestBookForm extends FormBase {
 
+protected $userAvatar;
+protected $userImage;
+
   /**
    * {@inheritdoc }
    */
@@ -199,28 +202,28 @@ class GuestBookForm extends FormBase {
 
   /**
    * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws \Exception
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-
-    $userAvatar = $form_state->getValue('user_avatar');
-    $userImage = $form_state->getValue('user_image');
+    $this->userAvatar = $form_state->getValue('user_avatar');
+    $this->userImage = $form_state->getValue('user_image');
 
     // Save avatar file as Permanent.
-    if (is_null($userAvatar[0])) {
+    if (is_null($this->userAvatar[0])) {
       $data['user_avatar'] = 0;
     }
     else {
-      $userAvatarFile = File::load($userAvatar[0]);
+      $userAvatarFile = File::load($this->userAvatar[0]);
       $userAvatarFile->setPermanent();
       $userAvatarFile->save();
     }
 
     // Save image file as Permanent.
-    if (is_null($userImage[0])) {
+    if (is_null($this->userImage[0])) {
       $data['user_image'] = 0;
     }
     else {
-      $userImageFile = File::load($userImage[0]);
+      $userImageFile = File::load($this->userImage[0]);
       $userImageFile->setPermanent();
       $userImageFile->save();
     }
@@ -230,8 +233,8 @@ class GuestBookForm extends FormBase {
       'user_email' => $form_state->getValue('user_email'),
       'user_phone' => $form_state->getValue('user_phone'),
       'user_message' => $form_state->getValue('user_message'),
-      'user_avatar' => $userAvatar[0],
-      'user_image' => $userImage[0],
+      'user_avatar' => $this->userAvatar[0],
+      'user_image' => $this->userImage[0],
       'date'      => \Drupal::time()->getCurrentTime(),
     ];
 

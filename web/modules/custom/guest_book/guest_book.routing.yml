@@ -13,3 +13,11 @@ guest_book.delete_form:
     _title: 'Delete form'
   requirements:
     _permission: 'administer site configuration'
+
+guest_book.edit_form:
+  path: '/admin/guest-book/{id}/edit'
+  defaults:
+    _form: '\Drupal\guest_book\Form\EditGuestBookForm'
+    _title: 'Edit form'
+  requirements:
+    _permission: 'administer site configuration'
