@@ -51,12 +51,10 @@ class GuestBookController extends ControllerBase {
         '#attributes' => [
           'class' => 'user_avatar',
           'alt' => $data->user_name . ' avatar',
-          'width' => 100,
         ],
       ];
 
       $userImageUri = File::load($data->user_image);
-
       if (is_null($userImageUri)) {
         $userImage = NULL;
       }
@@ -81,7 +79,7 @@ class GuestBookController extends ControllerBase {
         '#url' => $urlDelete,
         '#options' => [
           'attributes' => [
-            'class' => ['use-ajax'],
+            'class' => ['use-ajax', 'button', 'button-danger'],
             'data-dialog-type' => 'modal',
           ],
         ],
@@ -94,7 +92,7 @@ class GuestBookController extends ControllerBase {
         '#url' => $urlEdit,
         '#options' => [
           'attributes' => [
-            'class' => ['use-ajax'],
+            'class' => ['use-ajax', 'button'],
             'data-dialog-type' => 'modal',
           ],
         ],

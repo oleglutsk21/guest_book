@@ -22,11 +22,14 @@
 
 
           <div class="comments__user-contacts">
-              <span class="user__email-title">{{ 'Email'|t }}</span>
-              <a class="user__email-link" href="mailto:{{ items.user_email }}">{{ items.user_email }}</a>
-              <span class="user__phone-title">{{ 'Phone'|t }}</span>
-              <a class="user__phone-link" href="tel:{{ items.user_phone }}">{{ items.user_phone }}</a>
-
+              <div class="user__email">
+                <h4 class="user__email-title">{{ 'Email:'|t }}</h4>
+                <a class="user__email-link" href="mailto:{{ items.user_email }}">{{ items.user_email }}</a>
+              </div>
+              <div class="user__phone">
+                <h4 class="user__phone-title">{{ 'Phone:'|t }}</h4>
+                <a class="user__phone-link" href="tel:{{ items.user_phone }}">{{ items.user_phone }}</a>
+              </div>
           </div>
     {% if user.hasPermission('administer nodes') %}
       <div class="admin-control__buttons">

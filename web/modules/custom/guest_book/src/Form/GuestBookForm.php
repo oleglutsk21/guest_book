@@ -95,7 +95,7 @@ class GuestBookForm extends FormBase {
 
     $form['user_avatar'] = [
       '#type' => 'managed_file',
-      '#title' => t('Your avatar'),
+      '#title' => t('Your avatar:'),
       '#upload_location' => 'public://guest_book/avatars/',
       '#upload_validators' => [
         'file_validate_extensions' => ['png jpg jpeg'],
@@ -105,7 +105,7 @@ class GuestBookForm extends FormBase {
 
     $form['user_image'] = [
       '#type' => 'managed_file',
-      '#title' => t('Your message image'),
+      '#title' => t('Your message image:'),
       '#upload_location' => 'public://guest_book/images/',
       '#upload_validators' => [
         'file_validate_extensions' => ['png jpg jpeg'],

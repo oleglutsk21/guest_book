@@ -1,13 +1,62 @@
 .guest-book-form {
- padding-bottom: 20px;
- border-bottom: solid 2px;
+    padding-bottom: 20px;
+    border-bottom: solid 2px;
+}
+.comments__form {
+    padding: 15px;
+}
+.comments-page__title {
+    padding: 0 15px;
+    font-size: 20px;
+}
+.guest-book-form input:not(.form-submit) {
+    width: 100%;
 }
 .comments__item {
-margin-top: 20px;}
+    margin-top: 40px;
+    border-bottom: solid 1px;
+}
 .comments__item-inner {
     display: flex;
     justify-content: space-between;
 }
+.comments__user-avatar {
+    width: 100px;
+}
+.comments__user-message {
+    width: 100%;
+    margin-left: 0;
+}
+.comments__user-image {
+    width: 150px;
+}
+.comments__user-contacts {
+    padding:15px 0;
+    text-align: center;
+}
+.user__email,
+.user__phone {
+    padding: 0 15px;
+    display: inline-block;
+}
+.user__email-title,
+.user__phone-title {
+    display: inline;
+}
+.user__email-link,
+.user__phone-link {
+    text-decoration: none;
+    border-bottom: none;
+}
+.user-info {
+    padding-right: 15px;
+    border-right: solid 1px;
+}
 .user-message {
+    width: 80%;
     display: flex;
+    flex-wrap: wrap;
+}
+.admin-control__buttons {
+    margin: 15px 0;
 }
