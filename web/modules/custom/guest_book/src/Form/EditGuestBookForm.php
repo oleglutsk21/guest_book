@@ -3,44 +3,42 @@
 namespace Drupal\guest_book\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\HtmlCommand;
+use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\MessageCommand;
 use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 use Drupal\file\Entity\File;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
- * Form for edit comments.
+ * Provides form for edit comments.
  */
-
 class EditGuestBookForm extends FormBase {
+
   /**
    * {@inheritDoc}
    */
-
   public function getFormId(): string {
     return 'edit_form';
   }
 
   protected $userId;
+  protected $data;
 
-  
   /**
    * {@inheritDoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $userId = NULL): array {
     $this->userId = \Drupal::routeMatch()->getParameter('id');
     $connection = Database::getConnection();
-    $data = [];
+
+    $this->data = [];
     if (isset($this->userId)) {
       $query = $connection->select('guest_book', 'gb')
         ->condition('id', $this->userId)
         ->fields('gb');
-      $data = $query->execute()->fetchAssoc();
+      $data = $this->data = $query->execute()->fetchAssoc();
     }
     $form = (new GuestBookForm)->buildForm($form, $form_state);
     $form['user_name']['#default_value'] = (isset($data['user_name'])) ? $data['user_name'] : '';
@@ -68,14 +66,20 @@ class EditGuestBookForm extends FormBase {
     return $form;
   }
 
-  public function cancelCallback(array $form, FormStateInterface $form_state) {
-    $response  = new AjaxResponse();
+  /**
+   * Provides cancel button on the edit form.
+   */
+  public function cancelCallback(array $form, FormStateInterface $form_state): AjaxResponse {
+    $response = new AjaxResponse();
     $response->addCommand(new RedirectCommand('/guest-book'));
     \Drupal::messenger()->deleteAll();
     return $response;
   }
 
-  public function ajaxUserNameValidate(array $form, FormStateInterface $form_state) {
+  /**
+   * Show message when field user_name is valid or not by ajax.
+   */
+  public function ajaxUserNameValidate(array $form, FormStateInterface $form_state): AjaxResponse {
     $response = new AjaxResponse();
     if (!preg_match('/^[_A-Za-z0-9- \\+]{2,100}$/', $form_state->getValue('user_name'))) {
       $response->addCommand(
@@ -88,6 +92,9 @@ class EditGuestBookForm extends FormBase {
     return $response;
   }
 
+  /**
+   * Show message when field user_email is valid or not by ajax.
+   */
   public function ajaxEmailValidate(array $form, FormStateInterface $form_state): AjaxResponse {
     $userEmail = $form_state->getValue('user_email');
     $response  = new AjaxResponse();
@@ -107,7 +114,10 @@ class EditGuestBookForm extends FormBase {
     return $response;
   }
 
-  public function ajaxPhoneValidate(array $form, FormStateInterface $form_state) {
+  /**
+   * Show message when field user_phone is valid or not by ajax.
+   */
+  public function ajaxPhoneValidate(array $form, FormStateInterface $form_state): AjaxResponse {
     $userPhone = $form_state->getValue('user_phone');
     $response = new AjaxResponse();
     if (!preg_match('/^((\\+)|(00))[0-9]{12}$/', $userPhone)) {
@@ -125,11 +135,14 @@ class EditGuestBookForm extends FormBase {
     return $response;
   }
 
+  /**
+   * Show message when field user_phone is valid or not by ajax.
+   */
   public function ajaxSubmitForm(array &$form, FormStateInterface $form_state):object {
     \Drupal::messenger()->deleteAll();
     $response = new AjaxResponse();
     if ($form_state->hasAnyErrors()) {
-      $response->addCommand(new MessageCommand($this->t('The information you entered is incorrect, no message has been edit.'), NULL, ['type'=>'error']));
+      $response->addCommand(new MessageCommand($this->t('The information you entered is incorrect, no message has been edit.'), NULL, ['type' => 'error']));
     }
     else {
       \Drupal::messenger()->addStatus(t('Comment edited.'));
@@ -140,10 +153,32 @@ class EditGuestBookForm extends FormBase {
 
   }
 
+  /**
+   * Provides form validate function before submit.
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    (new GuestBookForm)->validateForm($form, $form_state);
+  }
+
+  /**
+   * Provides function for change image file status in table file_managed in database.
+   */
+  public function changeFileStatus($newFile, $currentFile) {
+    if ($newFile != $currentFile) {
+      \Drupal::database()
+        ->update('file_managed')
+        ->fields(['status' => 0])
+        ->condition('fid', $currentFile)->execute();
+    }
+  }
+
+  /**
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $userAvatar = $form_state->getValue('user_avatar');
     $userImage = $form_state->getValue('user_image');
-
+    $data = [];
     // Save avatar file as Permanent.
     if (is_null($userAvatar[0])) {
       $data['user_avatar'] = 0;
@@ -163,7 +198,8 @@ class EditGuestBookForm extends FormBase {
       $userImageFile->setPermanent();
       $userImageFile->save();
     }
-
+    $this->changeFileStatus($userAvatar, $this->data['user_avatar']);
+    $this->changeFileStatus($userImage, $this->data['user_image']);
     $data = [
       'user_name' => $form_state->getValue('user_name'),
       'user_email' => $form_state->getValue('user_email'),
@@ -179,6 +215,6 @@ class EditGuestBookForm extends FormBase {
       ->condition('id', $this->userId)
       ->execute();
 
-    }
+  }
 
 }

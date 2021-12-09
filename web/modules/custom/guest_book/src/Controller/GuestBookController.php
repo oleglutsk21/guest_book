@@ -26,9 +26,12 @@ class GuestBookController extends ControllerBase {
     ];
   }
 
+  /**
+   * Provides data output from the database.
+   */
   public function getComments(): array {
 
-    // get data from database
+    // Get data from database.
     $query = \Drupal::database()->select('guest_book', 'gb');
     $query->fields('gb', ['id', 'user_name', 'user_email', 'user_phone', 'user_message', 'user_avatar', 'user_image', 'date']);
     $query->orderBy('gb.date', 'DESC');
@@ -98,7 +101,7 @@ class GuestBookController extends ControllerBase {
         ],
       ];
 
-      //get data
+      // Get data.
       $rows[] = [
         'id' => $data->id,
         'user_name' => $data->user_name,
@@ -108,8 +111,8 @@ class GuestBookController extends ControllerBase {
         'user_avatar' => $userAvatar,
         'user_image' => $userImage,
         'date' => date('Y-m-d H:i:s', $data->date),
-        'delete'=> $linkDelete,
-        'edit'=> $linkEdit,
+        'delete' => $linkDelete,
+        'edit' => $linkEdit,
       ];
     }
 

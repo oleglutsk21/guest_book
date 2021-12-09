@@ -1,10 +1,14 @@
 <?php
 
 /**
+ * @file
  * @return mixed
- * Implements hook_schema()
+ *   Implements hook_schema()
  */
 
+/**
+ * Provides the creation of a table in the database.
+ */
 function guest_book_schema(): array {
   $schema['guest_book'] = [
     'description' => 'Database table for guest book module',
@@ -73,6 +77,6 @@ function guest_book_schema(): array {
  * Implements hook_uninstall().
  */
 function guest_book_uninstall() {
-  # Remove table
+  // Remove table.
   \Drupal::state()->delete('guest_book.guest_book');
 }

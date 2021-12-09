@@ -1,3 +1,24 @@
+{#
+/**
+ * @file
+ * Default template for the page of the Guest book module.
+ * Available variables:
+ * - form: Html form for adding comments.
+ * - items: List of all the field items. Each row contains:
+ *   - user_name: Name of the user who added a comment.
+ *   - user_email: Email of the user who added a comment.
+ *   - user_phone: Telephone number of the user who added a comment.
+ *   - user_avatar: Avatar of the user who added a comment.
+ *   - user_message: Message left by the user.
+ *   - user_image: The image that is attached to the User's Message.
+ *   - delete: A button to delete a comment that is only available to users with an administrator role.
+ *   - edit: A comment edit button that is only available to users with an administrator role.
+ *
+ * @ingroup templates
+ *
+ */
+#}
+
 {{ attach_library('guest_book/guest_book.page') }}
 
 <h1 class="comments-page__title">Hello! You can add here comments, impressions and wishes.</h1>
