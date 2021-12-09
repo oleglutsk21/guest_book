@@ -2,11 +2,9 @@
 
 namespace Drupal\guest_book\Form;
 
-use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Url;
-use Drupal\Core\Ajax\CloseModalDialogCommand;
 /**
  * Class DeleteForm
  * @package Drupal\guest_book\Form

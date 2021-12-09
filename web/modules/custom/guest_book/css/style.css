@@ -1,0 +1,13 @@
+.guest-book-form {
+ padding-bottom: 20px;
+ border-bottom: solid 2px;
+}
+.comments__item {
+margin-top: 20px;}
+.comments__item-inner {
+    display: flex;
+    justify-content: space-between;
+}
+.user-message {
+    display: flex;
+}

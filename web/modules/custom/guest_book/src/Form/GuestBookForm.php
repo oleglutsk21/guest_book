@@ -16,15 +16,13 @@ use Drupal\file\Entity\File;
 
 class GuestBookForm extends FormBase {
 
-protected $userAvatar;
-protected $userImage;
-
   /**
    * {@inheritdoc }
    */
-  public function getFormId(): string {
-    return 'guest_book_form';
-  }
+    public function getFormId(): string
+    {
+        return 'guest_book_form';
+    }
 
   /**
    * {@inheritdoc }
@@ -37,6 +35,7 @@ protected $userImage;
       '#required' => TRUE,
       '#placeholder' => $this->t('The name must be between 2 and 100 characters long'),
       '#suffix' => '<div class="user__name-validation-message"></div>',
+      '#pattern' => '^[_A-Za-z0-9- \\+]{2,100}$',
       '#ajax' => [
         'callback' => '::ajaxUserNameValidate',
         'event' => 'input',
@@ -130,12 +129,15 @@ protected $userImage;
   }
 
   public function ajaxUserNameValidate(array $form, FormStateInterface $form_state) {
-    $userName = $form_state->getValue('user_name');
     $response = new AjaxResponse();
-    if (strlen($userName) < 2 || strlen($userName) > 100) {
+    if (!preg_match('/^[_A-Za-z0-9- \\+]{2,100}$/', $form_state->getValue('user_name'))) {
       $response->addCommand(
-        new MessageCommand($this->t('Sorry, the name you entered is incorrect, please enter a valid name.'), '.user__name-validation-message', ['type' => 'error'], TRUE)
-      );
+        new MessageCommand(
+          $this->t('Sorry, the name you entered is incorrect, please enter a valid name.'),
+          '.user__name-validation-message', ['type' => 'error'],
+          TRUE));
+
+
     }
     else {
       $response->addCommand(new HtmlCommand('.user__name-validation-message', ''));
@@ -184,46 +186,59 @@ protected $userImage;
 
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
+    if (!preg_match('/^[_A-Za-z0-9- \\+]{2,100}$/', $form_state->getValue('user_name'))) {
+      $form_state->setErrorByName('user_name', $this->t('Name is not correct'));
+    }
+    if (!preg_match('/^[_A-Za-z0-9-\\+]*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$/', $form_state->getValue('user_email'))) {
+      $form_state->setErrorByName('user_name', $this->t('Email is not correct'));
+    }
+    if (!preg_match('/^((\\+)|(00))[0-9]{12}$/', $form_state->getValue('user_phone'))) {
+      $form_state->setErrorByName('user_name', $this->t('Email is not correct'));
+    }
+
   }
 
   public function ajaxSubmitForm(array &$form, FormStateInterface $form_state):object {
     \Drupal::messenger()->deleteAll();
     $response = new AjaxResponse();
-    if (!$form_state->hasAnyErrors())  {
-      $response->addCommand(new MessageCommand($this->t('Your comment has been added, thank you.')));
+    if ($form_state->hasAnyErrors()) {
+      $response->addCommand(new MessageCommand($this->t('The information you entered is incorrect, no message has been sent.'), NULL, ['type'=>'error']));
     }
     else {
-      $response->addCommand(new MessageCommand(
-        $this->t('The information you entered is incorrect, no message has been sent.'), Null, ['type'=>'error']));
+      \Drupal::messenger()->addStatus(t('Your comment has been added, thank you.'));
+      $response->addCommand(new RedirectCommand('/guest-book'));
     }
 
     return $response;
+
   }
 
   /**
    * @throws \Drupal\Core\Entity\EntityStorageException
    * @throws \Exception
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->userAvatar = $form_state->getValue('user_avatar');
-    $this->userImage = $form_state->getValue('user_image');
+    public function submitForm(array &$form, FormStateInterface $form_state) {
+
+
+        $userAvatar = $form_state->getValue('user_avatar');
+        $userImage = $form_state->getValue('user_image');
 
     // Save avatar file as Permanent.
-    if (is_null($this->userAvatar[0])) {
+    if (is_null($userAvatar[0])) {
       $data['user_avatar'] = 0;
     }
     else {
-      $userAvatarFile = File::load($this->userAvatar[0]);
+      $userAvatarFile = File::load($userAvatar[0]);
       $userAvatarFile->setPermanent();
       $userAvatarFile->save();
     }
 
     // Save image file as Permanent.
-    if (is_null($this->userImage[0])) {
+    if (is_null($userImage[0])) {
       $data['user_image'] = 0;
     }
     else {
-      $userImageFile = File::load($this->userImage[0]);
+      $userImageFile = File::load($userImage[0]);
       $userImageFile->setPermanent();
       $userImageFile->save();
     }

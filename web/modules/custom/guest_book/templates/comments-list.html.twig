@@ -1,3 +1,6 @@
+{{ attach_library('guest_book/guest_book.page') }}
+
+<h1 class="comments-page__title">Hello! You can add here comments, impressions and wishes.</h1>
 <div class="comments__form">
   {{ form }}
 </div>
@@ -5,15 +8,26 @@
 <div class="comments__items">
   {% for items in row %}
     <div class="comments__item">
-      <h3 class="comments__user-name">{{ items.user_name }}</h3>
-      <div class="cat__user-info">
-        <span class="cat__user-email"><a class="user__email-link" href="mailto:{{ items.user_email }}">{{ items.user_email }}</a></span>
-        <span class="cat__created-on">{{ items.date }}</span>
-        {{ items.user_phone }}
-        {{ items.user_avatar }}
-        {{ items.user_image }}
-        {{ items.user_message }}
-      </div>
+        <div class="comments__item-inner">
+            <div class="user-info">
+                <h3 class="comments__user-name">{{ items.user_name }}</h3>
+                <div class="comments__user-avatar">{{ items.user_avatar }}</div>
+                <div class="comments__time-created">{{ items.date }}</div>
+            </div>
+            <div class="user-message">
+                <blockquote class="comments__user-message">{{ items.user_message }}</blockquote>
+                    <div class="comments__user-image">{{ items.user_image }}</div>
+            </div>
+        </div>
+
+
+          <div class="comments__user-contacts">
+              <span class="user__email-title">{{ 'Email'|t }}</span>
+              <a class="user__email-link" href="mailto:{{ items.user_email }}">{{ items.user_email }}</a>
+              <span class="user__phone-title">{{ 'Phone'|t }}</span>
+              <a class="user__phone-link" href="tel:{{ items.user_phone }}">{{ items.user_phone }}</a>
+
+          </div>
     {% if user.hasPermission('administer nodes') %}
       <div class="admin-control__buttons">
         {{ items.delete }}
